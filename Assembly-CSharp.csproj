@@ -45,12 +45,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Emitter.cs" />
-     <Compile Include="Assets\Fireworks.cs" />
-     <Compile Include="Assets\FireworksManager.cs" />
-     <Compile Include="Assets\Particle.cs" />
-     <Compile Include="Assets\TestObj.cs" />
-     <Compile Include="Assets\Trail.cs" />
+     <Compile Include="Assets\Scripts\Emitter.cs" />
+     <Compile Include="Assets\Scripts\Fireworks.cs" />
+     <Compile Include="Assets\Scripts\FireworksManager.cs" />
+     <Compile Include="Assets\Scripts\Particle.cs" />
+     <Compile Include="Assets\Scripts\TestObj.cs" />
+     <Compile Include="Assets\Scripts\Trail.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
