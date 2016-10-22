@@ -3,36 +3,37 @@ using System.Collections;
 
 public class Particle : MonoBehaviour {
 
-	float rev = 0;
 
-	Vector3 velocity = Vector3.zero;
-
+	Vector3 vel = Vector3.zero;
+	Quaternion quat = Quaternion.identity;
 	Color alpha0 = new Color (1, 1, 1, 0);
+	SpriteRenderer sr;
 
-	public void Init (Vector3 vel) {
 
-		velocity = vel;
+	public void Init (Vector3 vel, Quaternion quat, Color color) {
+
+		this.vel = vel;
+		this.quat = quat;
+
+		sr = GetComponent<SpriteRenderer> ();
+		sr.color = color;
+		alpha0 = new Color (color.r, color.g, color.b, 0);
 	}
 
-	void Start () {
-		
-		GetComponent<SpriteRenderer> ().color = new Color (Random.value, Random.value, Random.value, 1);
-		alpha0 = GetComponent<SpriteRenderer> ().color;
-		alpha0.a = 0;
 
-		rev = Random.Range (-1.0f, 1.0f);
+	public void Move () {
 
-		Destroy (gameObject, 2.0f);
-	}
-	
-	void Update () {
+		vel *= 0.95f;
+		transform.position += vel;
+		transform.rotation = quat * transform.rotation;
+		//		transform.localScale = Vector3.Lerp (transform.localScale, Vector3.zero, 0.05f);
 
-		velocity *= 0.95f;
-		transform.position += velocity;
-		transform.rotation = Quaternion.AngleAxis (rev * 50, Vector3.forward) * transform.rotation;
-//		transform.localScale = Vector3.Lerp (transform.localScale, Vector3.zero, 0.05f);
-
-		SpriteRenderer sr = GetComponent<SpriteRenderer> ();
 		sr.color = Color.Lerp (sr.color, alpha0, 0.05f);
+	}
+
+
+	public void Kill () {
+
+		Destroy (gameObject);
 	}
 }

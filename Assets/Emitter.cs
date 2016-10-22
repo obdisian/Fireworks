@@ -10,15 +10,18 @@ public class Emitter : MonoBehaviour {
 
 
 	int timer = 0;
+	int createTime = 0;
 	int limitTime = 0;
 
 	float speed = 1;
 
 	List<string> fireworks = new List<string> ();
+	List<Particle> particles = new List<Particle> ();
 
 
-	public void Init (int limitTime, float speed, string[] fireworks) {
+	public void Init (int createTime, int limitTime, float speed, string[] fireworks) {
 
+		this.createTime = createTime;
 		this.limitTime = limitTime;
 		this.speed = speed;
 
@@ -33,13 +36,31 @@ public class Emitter : MonoBehaviour {
 	
 	void Update () {
 
-		timer++;
-		if (limitTime < timer) {
-
-			CreateParticle ();
-			Destroy (gameObject);
-			return;
+		if (createTime > timer) {
+			
+			Move ();
 		}
+		else if (createTime == timer) {
+			
+			CreateParticle ();
+		}
+		else if (limitTime > timer) {
+			
+			ParticleMove ();
+		}
+		else {
+			
+			Delete ();
+		}
+
+		timer++;
+	}
+
+
+	//================================================================================
+	//	エミッターの更新
+	//================================================================================
+	void Move () {
 
 		transform.position = transform.position + Vector3.up * speed;
 		if (timer % 3 == 0) {
@@ -48,6 +69,34 @@ public class Emitter : MonoBehaviour {
 	}
 
 
+	//================================================================================
+	//	粒子の更新
+	//================================================================================
+	void ParticleMove () {
+
+		foreach (Particle child in particles) {
+
+			child.Move ();
+		}
+	}
+
+
+	//================================================================================
+	//	死亡処理
+	//================================================================================
+	void Delete () {
+
+		foreach (Particle child in particles) {
+
+			child.Kill ();
+		}
+		Destroy (gameObject);
+	}
+
+
+	//================================================================================
+	//	粒子作成
+	//================================================================================
 	void CreateParticle () {
 
 		if (fireworks.Count == 0) {
@@ -61,7 +110,9 @@ public class Emitter : MonoBehaviour {
 				Vector3 vel = new Vector3 (Mathf.Cos (Pi2 / num * i), Mathf.Sin (Pi2 / num * i), 0) * speed;
 
 				GameObject obj = Instantiate (particle, transform.position, Quaternion.AngleAxis (Random.Range (0, 360), Vector3.forward)) as GameObject;
-				obj.GetComponent<Particle> ().Init (vel);
+				Particle par = obj.GetComponent<Particle> ();
+				particles.Add (obj.GetComponent<Particle> ());
+				par.Init (vel, Quaternion.AngleAxis ((Random.value-1) * 50, Vector3.forward), new Color (Random.value, Random.value, Random.value, 1));
 			}
 		}
 		else {
@@ -80,7 +131,9 @@ public class Emitter : MonoBehaviour {
 					switch (fireworks [y] [x]) {
 					case '#':
 						GameObject obj = Instantiate (particle, transform.position, Quaternion.AngleAxis (Random.Range (0, 360), Vector3.forward)) as GameObject;
-						obj.GetComponent<Particle> ().Init (vel);
+						Particle par = obj.GetComponent<Particle> ();
+						particles.Add (par);
+						par.Init (vel, Quaternion.AngleAxis ((Random.value-1) * 50, Vector3.forward), new Color (Random.value, Random.value, Random.value, 1));
 						break;
 					default: break;
 					}
